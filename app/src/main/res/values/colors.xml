@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="espresso">#4E342E</color>
+    <color name="coffee">#6D4C41</color>
+    <color name="latte">#D7CCC8</color>
+    <color name="cream">#FFF8F0</color>
+    <color name="caramel">#C68B59</color>
+    <color name="white">#FFFFFF</color>
+    <color name="text_secondary">#6F6560</color>
+    <color name="status_pending">#9E9E9E</color>
+    <color name="status_preparing">#F9A825</color>
+    <color name="status_ready">#2E7D32</color>
+    <color name="status_collected">#5D4037</color>
+    <color name="status_cancelled">#C62828</color>
+</resources>

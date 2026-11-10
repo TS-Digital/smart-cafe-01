@@ -1,0 +1,30 @@
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/coffee</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/latte</item>
+        <item name="colorOnPrimaryContainer">@color/espresso</item>
+        <item name="colorSecondary">@color/caramel</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">#F3E0CF</item>
+        <item name="colorOnSecondaryContainer">@color/espresso</item>
+        <item name="android:colorBackground">@color/cream</item>
+        <item name="colorSurface">@color/cream</item>
+        <item name="android:statusBarColor">@color/cream</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/cream</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/coffee</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="subtitleTextColor">@color/latte</item>
+        <item name="navigationIconTint">@color/white</item>
+    </style>
+
+    <style name="SectionTitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/espresso</item>
+    </style>
+</resources>
