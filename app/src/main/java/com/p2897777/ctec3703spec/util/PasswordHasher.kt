@@ -1,7 +1,5 @@
 package com.p2897777.ctec3703spec.util
 
-package com.p2897777.ctec3703spec.util
-
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
