@@ -101,6 +101,7 @@
     <style name="Widget.Cafe.BottomNav" parent="Widget.Material3.BottomNavigationView">
         <item name="backgroundTint">@color/white</item>
         <item name="elevation">8dp</item>
+        <item name="labelVisibilityMode">labeled</item>
         <item name="itemIconTint">@color/bottom_nav_item</item>
         <item name="itemTextColor">@color/bottom_nav_item</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.Cafe.BottomNav.Indicator</item>
