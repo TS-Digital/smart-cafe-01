@@ -43,6 +43,7 @@ class ProductAdapter(
         )
         h.b.root.alpha = if (p.available) 1f else 0.55f
         h.b.addButton.isEnabled = p.available
+        h.b.addButton.contentDescription = "Add ${p.name} to cart"
         h.b.addButton.setOnClickListener { onAdd(p) }
         h.b.root.setOnClickListener { onClick(p) }
     }

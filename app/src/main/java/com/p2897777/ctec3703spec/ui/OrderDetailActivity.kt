@@ -1,10 +1,12 @@
 package com.p2897777.ctec3703spec.ui
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +16,7 @@ import com.p2897777.ctec3703spec.data.CartRepository
 import com.p2897777.ctec3703spec.data.DataEvents
 import com.p2897777.ctec3703spec.data.FeedbackRepository
 import com.p2897777.ctec3703spec.databinding.ActivityOrderDetailBinding
+import com.p2897777.ctec3703spec.databinding.ItemOrderLineBinding
 import com.p2897777.ctec3703spec.model.Feedback
 import com.p2897777.ctec3703spec.model.Order
 import com.p2897777.ctec3703spec.model.OrderStatus
@@ -35,6 +38,8 @@ class OrderDetailActivity : AppCompatActivity() {
     /** Dropdown options: null = overall service, otherwise a product id from the order. */
     private var targets: List<Pair<String, Long?>> = emptyList()
     @Volatile private var readyAt: Long? = null
+    /** Product id → emoji, for the item rows (order lines only snapshot name and price). */
+    @Volatile private var emojis: Map<Long, String> = emptyMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +69,10 @@ class OrderDetailActivity : AppCompatActivity() {
                 // Access control: a customer can only open their own orders
                 if (o == null || o.userId != userId) null
                 else Triple(o, app.orders.history(orderId), app.feedback.forOrder(orderId))
-                    .also { readyAt = app.orders.readyAt(orderId) }
+                    .also {
+                        readyAt = app.orders.readyAt(orderId)
+                        emojis = o.items.mapNotNull { i -> app.products.findById(i.productId)?.let { i.productId to it.emoji } }.toMap()
+                    }
             }
             if (data == null) {
                 Snackbar.make(b.root, "Order not found", Snackbar.LENGTH_LONG).show()
@@ -78,28 +86,8 @@ class OrderDetailActivity : AppCompatActivity() {
     private fun render(o: Order, history: List<StatusChange>, feedback: List<Feedback>) {
         order = o
         b.toolbar.title = "Order #${o.id}"
-        b.statusHeadline.text = o.status.label
-        b.statusHeadline.setTextColor(ContextCompat.getColor(this, UiUtils.statusColorRes(o.status)))
-        b.statusMessage.text = OrderNotifier.messageFor(o.status)
-
-        val step = when (o.status) {
-            OrderStatus.PENDING -> 0; OrderStatus.PREPARING -> 1; OrderStatus.READY -> 2
-            OrderStatus.COLLECTED -> 3; OrderStatus.CANCELLED -> 0
-        }
-        b.progress.visibility = if (o.status == OrderStatus.CANCELLED) View.GONE else View.VISIBLE
-        b.progress.setProgressCompat(step, true)
-        listOf(b.step0, b.step1, b.step2, b.step3).forEachIndexed { i, tv ->
-            tv.visibility = b.progress.visibility
-            tv.setTextColor(ContextCompat.getColor(this, if (i <= step) R.color.espresso else R.color.text_secondary))
-        }
-
-        b.itemsText.text = buildString {
-            o.items.forEach { appendLine("%2d× %-22s %7s".format(it.quantity, it.productName.take(22), Money.format(it.lineTotalPence))) }
-            append("%-26s %7s".format("Total", Money.format(o.totalPence)))
-        }
-        b.noteText.visibility = if (o.note.isBlank()) View.GONE else View.VISIBLE
-        b.noteText.text = "Note: ${o.note}"
-        b.historyText.text = history.joinToString("\n") { "• ${it.status.label}  ${UiUtils.dateTime(it.changedAt)}" }
+        renderStatus(o, history)
+        renderItems(o)
 
         b.cancelButton.visibility = if (o.status.canCustomerCancel) View.VISIBLE else View.GONE
         b.reorderButton.visibility = if (o.status.isActive) View.GONE else View.VISIBLE
@@ -119,11 +107,94 @@ class OrderDetailActivity : AppCompatActivity() {
             }
         }
         b.feedbackTitle.visibility = if (feedback.isEmpty()) View.GONE else View.VISIBLE
+        b.feedbackList.visibility = b.feedbackTitle.visibility
         b.feedbackList.text = feedback.joinToString("\n\n") { f ->
             val what = f.productId?.let { pid -> o.items.firstOrNull { it.productId == pid }?.productName } ?: "Overall service"
             "$what: " + "★".repeat(f.rating) + "☆".repeat(5 - f.rating) + if (f.comment.isNotBlank()) "\n“${f.comment}”" else ""
         }
     }
+
+    /** Status card: tinted icon badge, headline, and the four-step tracker with the time each step was reached. */
+    private fun renderStatus(o: Order, history: List<StatusChange>) {
+        val statusColor = ContextCompat.getColor(this, UiUtils.statusColorRes(o.status))
+        b.statusIcon.setImageResource(statusIconRes(o.status))
+        b.statusIcon.imageTintList = ColorStateList.valueOf(statusColor)
+        // Same hue as the icon at ~15% opacity for the badge behind it
+        b.statusIconBg.backgroundTintList = ColorStateList.valueOf(ColorUtils.setAlphaComponent(statusColor, 0x26))
+        b.statusHeadline.text = o.status.label
+
+        val cancelledAt = history.lastOrNull { it.status == OrderStatus.CANCELLED }?.changedAt
+        b.statusMessage.text = OrderNotifier.messageFor(o.status) +
+            (cancelledAt?.let { "\nCancelled at ${UiUtils.time(it).substring(0, 5)}" } ?: "")
+
+        val cancelled = o.status == OrderStatus.CANCELLED
+        b.tracker.visibility = if (cancelled) View.GONE else View.VISIBLE
+        if (cancelled) return
+
+        val steps = listOf(OrderStatus.PENDING, OrderStatus.PREPARING, OrderStatus.READY, OrderStatus.COLLECTED)
+        val current = steps.indexOf(o.status)
+        val reachedAt = history.groupBy { it.status }.mapValues { (_, v) -> v.maxOf { it.changedAt } }
+        val done = ContextCompat.getColor(this, R.color.coffee)
+        val todo = ContextCompat.getColor(this, R.color.latte)
+        listOf(b.step0, b.step1, b.step2, b.step3).forEachIndexed { i, s ->
+            s.label.text = steps[i].label.substringBefore(' ')
+            s.lineLeft.visibility = if (i == 0) View.INVISIBLE else View.VISIBLE
+            s.lineRight.visibility = if (i == steps.lastIndex) View.INVISIBLE else View.VISIBLE
+            s.lineLeft.setBackgroundColor(if (i <= current) done else todo)
+            s.lineRight.setBackgroundColor(if (i < current) done else todo)
+            when {
+                i < current -> {
+                    s.dot.setBackgroundResource(R.drawable.bg_circle)
+                    s.dot.backgroundTintList = ColorStateList.valueOf(done)
+                    s.dot.layoutParams = s.dot.layoutParams.apply { width = dp(14); height = dp(14) }
+                }
+                i == current -> {
+                    s.dot.setBackgroundResource(R.drawable.bg_step_current)
+                    s.dot.backgroundTintList = null
+                    s.dot.layoutParams = s.dot.layoutParams.apply { width = dp(22); height = dp(22) }
+                }
+                else -> {
+                    s.dot.setBackgroundResource(R.drawable.bg_step_todo)
+                    s.dot.backgroundTintList = null
+                    s.dot.layoutParams = s.dot.layoutParams.apply { width = dp(14); height = dp(14) }
+                }
+            }
+            s.label.setTextColor(ContextCompat.getColor(this, if (i <= current) R.color.espresso else R.color.text_secondary))
+            val at = reachedAt[steps[i]]
+            s.time.text = if (i <= current && at != null) UiUtils.time(at).substring(0, 5) else ""
+            s.root.contentDescription = steps[i].label + when {
+                i < current -> ", done"
+                i == current -> ", current step"
+                else -> ", not reached yet"
+            }
+        }
+    }
+
+    /** Neat item rows (emoji, name, quantity pill, price) plus the total and any barista note. */
+    private fun renderItems(o: Order) {
+        b.placedText.text = "Placed ${UiUtils.dateTime(o.createdAt)}"
+        b.itemsContainer.removeAllViews()
+        o.items.forEach { item ->
+            val row = ItemOrderLineBinding.inflate(layoutInflater, b.itemsContainer, true)
+            row.emoji.text = emojis[item.productId] ?: "☕"
+            row.name.text = item.productName
+            row.quantity.text = "${item.quantity}×"
+            row.price.text = Money.format(item.lineTotalPence)
+        }
+        b.totalText.text = Money.format(o.totalPence)
+        b.noteText.visibility = if (o.note.isBlank()) View.GONE else View.VISIBLE
+        b.noteText.text = "“${o.note}”"
+    }
+
+    private fun statusIconRes(s: OrderStatus) = when (s) {
+        OrderStatus.PENDING -> R.drawable.ic_status_pending
+        OrderStatus.PREPARING -> R.drawable.ic_status_preparing
+        OrderStatus.READY -> R.drawable.ic_status_ready
+        OrderStatus.COLLECTED -> R.drawable.ic_status_collected
+        OrderStatus.CANCELLED -> R.drawable.ic_status_cancelled
+    }
+
+    private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
     /** Shows the predicted pickup time while waiting, and predicted vs actual once it is ready. */
     private fun renderEta(o: Order) {

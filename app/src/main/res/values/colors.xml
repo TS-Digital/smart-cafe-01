@@ -7,6 +7,16 @@
     <color name="caramel">#C68B59</color>
     <color name="white">#FFFFFF</color>
     <color name="text_secondary">#6F6560</color>
+
+    <!-- Warm surface tones that replace Material 3's default lilac containers -->
+    <color name="foam">#FDF3E9</color>
+    <color name="biscuit">#F8EDE2</color>
+    <color name="oat">#F3E6DA</color>
+    <color name="sand">#EDDFD2</color>
+    <color name="caramel_soft">#F3E0CF</color>
+    <color name="outline">#A1887F</color>
+    <color name="outline_soft">#E3D5C9</color>
+
     <color name="status_pending">#9E9E9E</color>
     <color name="status_preparing">#F9A825</color>
     <color name="status_ready">#2E7D32</color>

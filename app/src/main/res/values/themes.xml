@@ -6,14 +6,123 @@
         <item name="colorOnPrimaryContainer">@color/espresso</item>
         <item name="colorSecondary">@color/caramel</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorSecondaryContainer">#F3E0CF</item>
+        <item name="colorSecondaryContainer">@color/caramel_soft</item>
         <item name="colorOnSecondaryContainer">@color/espresso</item>
+        <item name="colorTertiary">@color/caramel</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">@color/caramel_soft</item>
+        <item name="colorOnTertiaryContainer">@color/espresso</item>
+
+        <!-- Surfaces: without these, Material 3 falls back to its purple baseline
+             (lilac bottom bar, chips, switch tracks and dialogs). -->
         <item name="android:colorBackground">@color/cream</item>
+        <item name="colorOnBackground">@color/espresso</item>
         <item name="colorSurface">@color/cream</item>
+        <item name="colorOnSurface">@color/espresso</item>
+        <item name="colorSurfaceVariant">@color/sand</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorSurfaceContainerLowest">@color/white</item>
+        <item name="colorSurfaceContainerLow">@color/foam</item>
+        <item name="colorSurfaceContainer">@color/biscuit</item>
+        <item name="colorSurfaceContainerHigh">@color/oat</item>
+        <item name="colorSurfaceContainerHighest">@color/sand</item>
+        <item name="colorSurfaceBright">@color/cream</item>
+        <item name="colorSurfaceDim">@color/sand</item>
+        <item name="colorSurfaceInverse">@color/espresso</item>
+        <item name="colorOnSurfaceInverse">@color/cream</item>
+        <item name="colorPrimaryInverse">@color/caramel_soft</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outline_soft</item>
+
         <item name="android:statusBarColor">@color/cream</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/cream</item>
+        <item name="android:navigationBarColor">@color/white</item>
         <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Poppins for headings, titles and buttons; body text stays Roboto for readability -->
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Cafe.DisplaySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Cafe.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Cafe.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Cafe.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Cafe.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Cafe.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Cafe.TitleSmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Cafe.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Cafe.LabelMedium</item>
+
+        <item name="bottomNavigationStyle">@style/Widget.Cafe.BottomNav</item>
+        <item name="chipStyle">@style/Widget.Cafe.Chip</item>
+        <item name="materialSwitchStyle">@style/Widget.Cafe.Switch</item>
+    </style>
+
+    <!-- Type scale -->
+    <style name="TextAppearance.Cafe.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+    </style>
+    <style name="TextAppearance.Cafe.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.Cafe.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.Cafe.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.Cafe.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.Cafe.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+    <style name="TextAppearance.Cafe.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+    <style name="TextAppearance.Cafe.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+    <style name="TextAppearance.Cafe.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+    <style name="TextAppearance.Cafe.ToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+
+    <!-- Components -->
+    <style name="Widget.Cafe.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/white</item>
+        <item name="elevation">8dp</item>
+        <item name="itemIconTint">@color/bottom_nav_item</item>
+        <item name="itemTextColor">@color/bottom_nav_item</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.Cafe.BottomNav.Indicator</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Cafe.LabelMedium</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Cafe.LabelMedium</item>
+    </style>
+    <style name="Widget.Cafe.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/caramel_soft</item>
+    </style>
+
+    <style name="Widget.Cafe.Chip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="android:textColor">@color/espresso</item>
+        <item name="checkedIconTint">@color/espresso</item>
+        <item name="android:textAppearance">@style/TextAppearance.Cafe.LabelLarge</item>
+    </style>
+
+    <style name="Widget.Cafe.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="trackTint">@color/switch_track</item>
+        <item name="thumbTint">@color/switch_thumb</item>
+        <item name="trackDecorationTint">@color/switch_track_outline</item>
     </style>
 
     <style name="Toolbar" parent="Widget.Material3.Toolbar">
@@ -21,10 +130,10 @@
         <item name="titleTextColor">@color/white</item>
         <item name="subtitleTextColor">@color/latte</item>
         <item name="navigationIconTint">@color/white</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Cafe.ToolbarTitle</item>
     </style>
 
-    <style name="SectionTitle" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:textStyle">bold</item>
+    <style name="SectionTitle" parent="TextAppearance.Cafe.TitleMedium">
         <item name="android:textColor">@color/espresso</item>
     </style>
 </resources>

@@ -1,11 +1,17 @@
 package com.p2897777.ctec3703spec.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.p2897777.ctec3703spec.app
 import com.p2897777.ctec3703spec.databinding.ActivityLoginBinding
@@ -23,8 +29,21 @@ class LoginActivity : AppCompatActivity() {
             goToMain()
             return
         }
+        // The coffee banner runs up behind the status bar, so draw edge-to-edge with light status icons
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
         b = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(b.root)
+        val bannerTop = b.banner.paddingTop
+        ViewCompat.setOnApplyWindowInsetsListener(b.root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            b.banner.updatePadding(top = bannerTop + bars.top)
+            b.content.updatePadding(left = bars.left, right = bars.right, bottom = maxOf(bars.bottom, ime.bottom))
+            insets
+        }
 
         b.loginButton.setOnClickListener { submit() }
         b.passwordInput.setOnEditorActionListener { _, id, _ ->

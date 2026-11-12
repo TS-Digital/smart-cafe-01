@@ -15,8 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceHeadlineSmall"
-            android:textColor="@color/espresso"
-            android:textStyle="bold" />
+            android:textColor="@color/espresso" />
 
         <TextView
             android:id="@+id/emailText"
@@ -45,12 +44,54 @@
                     android:text="@string/your_stats" />
 
                 <TextView
-                    android:id="@+id/statsText"
+                    android:id="@+id/statsEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:lineSpacingExtra="4dp"
-                    android:textColor="@color/espresso" />
+                    android:text="Place your first order to see your stats here."
+                    android:textColor="@color/text_secondary"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/statsGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <include android:id="@+id/statOrders" layout="@layout/view_stat_tile" />
+
+                        <Space android:layout_width="10dp" android:layout_height="0dp" />
+
+                        <include android:id="@+id/statSpent" layout="@layout/view_stat_tile" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <include android:id="@+id/statAverage" layout="@layout/view_stat_tile" />
+
+                        <Space android:layout_width="10dp" android:layout_height="0dp" />
+
+                        <include android:id="@+id/statFavourite" layout="@layout/view_stat_tile" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/busiestText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

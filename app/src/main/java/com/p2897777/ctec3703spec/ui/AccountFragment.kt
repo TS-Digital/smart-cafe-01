@@ -11,6 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.p2897777.ctec3703spec.app
 import com.p2897777.ctec3703spec.data.OrderStatusRules
 import com.p2897777.ctec3703spec.databinding.FragmentAccountBinding
+import com.p2897777.ctec3703spec.databinding.ViewStatTileBinding
 import com.p2897777.ctec3703spec.recommend.OrderInsights
 import com.p2897777.ctec3703spec.util.Money
 import kotlinx.coroutines.Dispatchers
@@ -67,12 +68,19 @@ class AccountFragment : Fragment() {
             if (_b == null) return@launch
             b.nameText.text = user?.name ?: cafe.session.userName
             b.emailText.text = user?.email ?: ""
-            b.statsText.text = if (stats.orderCount == 0) "Place your first order to see your stats here." else buildString {
-                appendLine("Orders: ${stats.orderCount}")
-                appendLine("Total spent: ${Money.format(stats.totalSpentPence)}")
-                appendLine("Average order: ${Money.format(stats.averageOrderPence)}")
-                stats.favouriteItem?.let { appendLine("Favourite: $it (${stats.favouriteCount}×)") }
-                stats.busiestHour?.let { append("You usually order around %02d:00".format(it)) }
+            val hasStats = stats.orderCount > 0
+            b.statsEmpty.visibility = if (hasStats) View.GONE else View.VISIBLE
+            b.statsGrid.visibility = if (hasStats) View.VISIBLE else View.GONE
+            if (hasStats) {
+                tile(b.statOrders, stats.orderCount.toString(), "Orders")
+                tile(b.statSpent, Money.format(stats.totalSpentPence), "Total spent")
+                tile(b.statAverage, Money.format(stats.averageOrderPence), "Average order")
+                tile(
+                    b.statFavourite, stats.favouriteItem ?: "–",
+                    if (stats.favouriteItem != null) "Favourite · ${stats.favouriteCount}×" else "Favourite"
+                )
+                b.busiestText.visibility = if (stats.busiestHour == null) View.GONE else View.VISIBLE
+                b.busiestText.text = stats.busiestHour?.let { "☕ You usually order around %02d:00".format(it) }
             }
             b.recStatsText.text = recs.addRate?.let {
                 "${recs.shown} recommendations shown, ${recs.added} added to cart (%.0f%% add rate)".format(it * 100)
@@ -96,6 +104,14 @@ class AccountFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun tile(t: ViewStatTileBinding, value: String, label: String) {
+        t.value.text = value
+        t.label.text = label
+        // Long favourite names get a smaller size so the tile stays one line
+        t.value.textSize = if (value.length > 9) 17f else 24f
+        t.root.contentDescription = "$label: $value"
     }
 
     private fun showStaffTools(on: Boolean) {
